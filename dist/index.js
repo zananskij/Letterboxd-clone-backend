@@ -22,6 +22,22 @@ const API_KEY = process.env.API_KEY;
 const app = (0, express_1.default)();
 const port = 8000;
 app.use((0, cors_1.default)());
+const { Client } = require("pg");
+const client = new Client({
+    host: process.env.PG_HOST,
+    port: process.env.PG_PORT,
+    user: process.env.PG_USER,
+    password: process.env.PG_PASSWORD,
+    database: process.env.PG_DATABASE,
+});
+client.connect((err) => {
+    if (err) {
+        console.error("connection error", err.stack);
+    }
+    else {
+        console.log("connected");
+    }
+});
 // app.use(
 //   cors({
 //     origin: "http://localhost:8000/test",
