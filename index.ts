@@ -24,6 +24,7 @@ const client = new Client({
   user: process.env.PG_USER,
   password: process.env.PG_PASSWORD,
   database: process.env.PG_DATABASE,
+  URI: process.env.PG_URI,
 })
 client.connect((err: Error) => {
   if (err) {
@@ -145,7 +146,7 @@ const requests = {
   fetchDocumentaries: `${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&with_genres=99`,
 }
 
-app.get("https://letterboxd-clone-backend.herokuapp.com/", async (req, res) => {
+app.get("/", async (req, res) => {
   Promise.all([
     Axios.get(requests.fetchTrending),
     Axios.get(requests.fetchNetflixOriginals),
