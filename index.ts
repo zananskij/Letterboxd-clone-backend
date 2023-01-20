@@ -145,7 +145,7 @@ const requests = {
   fetchDocumentaries: `${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&with_genres=99`,
 }
 
-app.get("/", async (req, res) => {
+app.get("https://letterboxd-clone-backend.herokuapp.com/", async (req, res) => {
   Promise.all([
     Axios.get(requests.fetchTrending),
     Axios.get(requests.fetchNetflixOriginals),

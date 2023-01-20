@@ -142,7 +142,7 @@ const requests = {
     fetchActionMovies: `${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&with_genres=28`,
     fetchDocumentaries: `${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&with_genres=99`,
 };
-app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("https://letterboxd-clone-backend.herokuapp.com/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     Promise.all([
         axios_1.default.get(requests.fetchTrending),
         axios_1.default.get(requests.fetchNetflixOriginals),
