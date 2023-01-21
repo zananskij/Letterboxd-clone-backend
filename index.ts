@@ -142,7 +142,7 @@ app.listen(port, () => {
 // after connected to db
 // after connected to db
 
-app.post("/register", async (req, res) => {
+app.post("https://letterboxd-clone.herokuapp.com/register", async (req, res) => {
   try {
     const { username, password } = req.body
     const text = "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *"
