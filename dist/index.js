@@ -18,7 +18,14 @@ const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
-const port = 8000;
+// const port = 8000
+const port = process.env.PG_PORT || 8000;
+// app.listen(port, () => {
+//   console.log(`listening on port ${port} `)
+// })
+app.listen(port, () => {
+    console.log(`listening on this port ${port} || process.env.PG_PORT`);
+});
 app.use((0, cors_1.default)());
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
@@ -126,9 +133,6 @@ app.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 // })
 app.get("/profile", (req, res) => {
     res.send("profile page");
-});
-app.listen(port, () => {
-    console.log(`listening on port ${port} `);
 });
 app.get("/trending", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const response = yield axios_1.default.get(requests.fetchTrending);

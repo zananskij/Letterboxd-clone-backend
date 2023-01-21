@@ -8,7 +8,14 @@ dotenv.config()
 
 const app: Express = express()
 // const port = 8000
-const port = process.env.PG_PORT || 8000
+const port = process.env.PORT || 8000
+
+// app.listen(port, () => {
+//   console.log(`listening on port ${port} `)
+// })
+app.listen(port, () => {
+  console.log(`listening on this port ${port} || process.env.PG_PORT`)
+})
 
 app.use(cors())
 
@@ -22,7 +29,7 @@ const API_KEY = process.env.API_KEY
 const { Client } = require("pg")
 const client = new Client({
   host: process.env.PG_HOST,
-  port: process.env.PG_PORT,
+  port: process.env.PORT,
   user: process.env.PG_USER,
   password: process.env.PG_PASSWORD,
   database: process.env.PG_DATABASE,
@@ -126,13 +133,6 @@ app.post("/login", async (req, res) => {
 
 app.get("/profile", (req: Request, res: Response) => {
   res.send("profile page")
-})
-
-// app.listen(port, () => {
-//   console.log(`listening on port ${port} `)
-// })
-app.listen(port, () => {
-  console.log(`listening on this port ${port} || process.env.PG_PORT`)
 })
 
 app.get("/trending", async (req, res) => {
