@@ -45,74 +45,77 @@ client.connect((err) => {
         console.log("connected");
     }
 });
-// const jwt = require("jsonwebtoken")
-// app.post("/register", async (req, res) => {
-//   // verify
-//   const token = req.headers.authorization
-//   // verify
-//   const { username, password } = req.body
-//   try {
-//     const result = await client.query("INSERT INTO users(username,password) VALUES($1, $2) RETURNING id", [
-//       username,
-//       password,
-//     ])
-//     const token = jwt.sign({ userId: result.rows[0].id }, process.env.SECRET_KEY, {
-//       expiresIn: "24h",
-//     })
-//     res.status(201).json({ token })
-//   } catch (error) {
-//     console.log(error)
-//     res.status(500).json({ message: "Error creating user" })
-//   }
-//   const decoded = jwt.verify(token, process.env.SECRET_KEY)
-//   jwt.verify(token, process.env.SECRET_KEY)
-// })
+const jwt = require("jsonwebtoken");
+app.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // verify
+    const token = req.headers.authorization;
+    // verify
+    const { username, password } = req.body;
+    try {
+        const result = yield client.query("INSERT INTO users(username,password) VALUES($1, $2) RETURNING id", [
+            username,
+            password,
+        ]);
+        const token = jwt.sign({ userId: result.rows[0].id }, process.env.SECRET_KEY, {
+            expiresIn: "24h",
+        });
+        res.status(201).json({ token });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Error creating user" });
+    }
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    jwt.verify(token, process.env.SECRET_KEY);
+}));
 // register
-// app.post("/register", async (req, res) => {
-//   // Extract the user's information from the request body
-//   const { username, password } = req.body
-//   try {
-//     // Insert the user into the database
-//     const result = await client.query("INSERT INTO users(username,password) VALUES($1, $2) RETURNING id", [
-//       username,
-//       password,
-//     ])
-//     // Create a new token
-//     const token = jwt.sign({ userId: result.rows[0].id }, process.env.SECRET_KEY, {
-//       expiresIn: "24h",
-//     })
-//     // associate the token with the user in the database
-//     await client.query("INSERT INTO tokens (user_id, token) VALUES ($1, $2)", [result.rows[0].id, token])
-//     // Send the token back in the response
-//     res.status(201).json({ token })
-//   } catch (error) {
-//     console.log(error)
-//     res.status(500).json({ message: "Error creating user" })
-//   }
-// })
+app.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // Extract the user's information from the request body
+    const { username, password } = req.body;
+    try {
+        // Insert the user into the database
+        const result = yield client.query("INSERT INTO users(username,password) VALUES($1, $2) RETURNING id", [
+            username,
+            password,
+        ]);
+        // Create a new token
+        const token = jwt.sign({ userId: result.rows[0].id }, process.env.SECRET_KEY, {
+            expiresIn: "24h",
+        });
+        // associate the token with the user in the database
+        yield client.query("INSERT INTO tokens (user_id, token) VALUES ($1, $2)", [result.rows[0].id, token]);
+        // Send the token back in the response
+        res.status(201).json({ token });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Error creating user" });
+    }
+}));
 // login
-// app.post("/login", async (req, res) => {
-//   // Extract the user's information from the request body
-//   const { username, password } = req.body
-//   try {
-//     // Verify that the user's credentials are correct
-//     const result = await client.query("SELECT * FROM users WHERE username=$1 AND password=$2", [username, password])
-//     if (result.rows.length === 0) {
-//       return res.status(401).json({ message: "Invalid credentials" })
-//     }
-//     // Create a new token
-//     const token = jwt.sign({ userId: result.rows[0].id }, process.env.SECRET_KEY, {
-//       expiresIn: "24h",
-//     })
-//     // associate the token with the user in the database
-//     await client.query("INSERT INTO tokens (user_id, token) VALUES ($1, $2)", [result.rows[0].id, token])
-//     // Send the token back in the response
-//     res.status(200).json({ token })
-//   } catch (error) {
-//     console.log(error)
-//     res.status(500).json({ message: "Error logging in" })
-//   }
-// })
+app.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // Extract the user's information from the request body
+    const { username, password } = req.body;
+    try {
+        // Verify that the user's credentials are correct
+        const result = yield client.query("SELECT * FROM users WHERE username=$1 AND password=$2", [username, password]);
+        if (result.rows.length === 0) {
+            return res.status(401).json({ message: "Invalid credentials" });
+        }
+        // Create a new token
+        const token = jwt.sign({ userId: result.rows[0].id }, process.env.SECRET_KEY, {
+            expiresIn: "24h",
+        });
+        // associate the token with the user in the database
+        yield client.query("INSERT INTO tokens (user_id, token) VALUES ($1, $2)", [result.rows[0].id, token]);
+        // Send the token back in the response
+        res.status(200).json({ token });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Error logging in" });
+    }
+}));
 // app.use(
 //   cors({
 //     origin: "http://localhost:8000/test",
