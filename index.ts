@@ -7,7 +7,9 @@ import dotenv from "dotenv"
 dotenv.config()
 
 const app: Express = express()
-const port = 8000
+// const port = 8000
+const port = process.env.PG_PORT || 8000
+
 app.use(cors())
 
 const bodyParser = require("body-parser")
@@ -129,7 +131,7 @@ app.get("/profile", (req: Request, res: Response) => {
 // app.listen(port, () => {
 //   console.log(`listening on port ${port} `)
 // })
-app.listen(`process.env.PG_PORT || ${port}`, () => {
+app.listen(port, () => {
   console.log(`listening on this port ${port} || process.env.PG_PORT`)
 })
 
