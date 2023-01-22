@@ -1,4 +1,6 @@
 "use strict";
+// import cors from "cors"
+// const port = process.env.PORT || 8000
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -12,25 +14,35 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// const PORT = parseInt(process.env.PORT || "5432", 10)
 const express_1 = __importDefault(require("express"));
-// import cors from "cors"
-// const port = process.env.PORT || 8000
 const axios_1 = __importDefault(require("axios"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const BASE_URL = "https://api.themoviedb.org/3";
 const API_KEY = process.env.API_KEY;
-const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
-const cors = require("cors");
-app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+const cors = require("cors");
+app.use(cors());
+const PORT = process.env.PORT;
+app.listen(process.env.PORT, () => {
+    console.log(`Server running on port ${process.env.PORT}`);
+});
+app.listen(3000, () => {
+    console.log("listening");
+});
+app.listen(3001, () => {
+    console.log("listening to port 3001");
+});
+// app.listen(5432, () => {
+//   console.log("listening")
+// })
 const { Pool } = require("pg");
-const port = parseInt(process.env.PORT || "5432", 10);
 const pool = new Pool({
-    connectionString: `postgres://${process.env.PG_USER}:${process.env.PG_PASSWORD}@${process.env.PG_HOST}:${port}/${process.env.PG_DATABASE}`,
+    connectionString: `postgres://${process.env.PG_USER}:${process.env.PG_PASSWORD}@${process.env.PG_HOST}:${process.env.PORT}/${process.env.PG_DATABASE}`,
     ssl: {
         rejectUnauthorized: false,
     },
@@ -43,6 +55,55 @@ pool.connect((err) => {
         console.log("Connected to the database");
     }
 });
+app.post("https://letterboxd-clone-backend.herokuapp.com/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { username, password } = req.body;
+        const text = "INSERT INTO users (id, username, password) VALUES (DEFAULT, $1, $2) RETURNING *";
+        const values = [username, password];
+        const { rows } = yield pool.query(text, values);
+        res.status(201).json(rows[0]);
+        console.log(req.body);
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Error registering user" });
+    }
+}));
+const requests = {
+    fetchTrending: `${BASE_URL}/trending/all/week?api_key=${API_KEY}&language=en-US`,
+    fetchNetflixOriginals: `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_networks=213`,
+    fetchTopRated: `${BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=en-US`,
+    fetchHorrorMovies: `${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&with_genres=27`,
+    fetchComedyMovies: `${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&with_genres=35`,
+    fetchActionMovies: `${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&with_genres=28`,
+    fetchDocumentaries: `${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&with_genres=99`,
+};
+app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    Promise.all([
+        axios_1.default.get(requests.fetchTrending),
+        axios_1.default.get(requests.fetchNetflixOriginals),
+        axios_1.default.get(requests.fetchTopRated),
+        axios_1.default.get(requests.fetchHorrorMovies),
+        axios_1.default.get(requests.fetchComedyMovies),
+        axios_1.default.get(requests.fetchActionMovies),
+        axios_1.default.get(requests.fetchDocumentaries),
+    ])
+        .then(([response1, response2, response3, response4, response5, response6, response7]) => {
+        const data = {
+            trending: response1.data,
+            netflixOriginals: response2.data,
+            topRated: response3.data,
+            horror: response4.data,
+            comedy: response5.data,
+            action: response6.data,
+            documentaries: response7.data,
+        };
+        res.json(data);
+    })
+        .catch((error) => {
+        res.status(500).json({ message: "could not fetch data" });
+    });
+}));
 // const { Client } = require("pg")
 // const port = parseInt(process.env.PORT || "5432", 10)
 // const client = new Client({
@@ -61,9 +122,6 @@ pool.connect((err) => {
 // } else {
 //   console.log("Error connecting to the database")
 // }
-app.listen(port, () => {
-    console.log(`listening on this port ${port} || process.env.PG_PORT`);
-});
 // const { Client } = require("pg")
 // const client = new Client({
 //   host: process.env.PG_HOST,
@@ -140,19 +198,6 @@ app.listen(port, () => {
 // after connected to db
 // after connected to db
 // after connected to db
-app.post("https://letterboxd-clone.herokuapp.com/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { username, password } = req.body;
-        const text = "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *";
-        const values = [username, password];
-        const { rows } = yield pool.query(text, values);
-        res.status(201).json(rows[0]);
-    }
-    catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Error registering user" });
-    }
-}));
 // after connected to db
 // after connected to db
 // after connected to db
@@ -203,41 +248,6 @@ app.post("https://letterboxd-clone.herokuapp.com/register", (req, res) => __awai
 //     res.status(500).json({ message: "Error logging in" })
 //   }
 // })
-const requests = {
-    fetchTrending: `${BASE_URL}/trending/all/week?api_key=${API_KEY}&language=en-US`,
-    fetchNetflixOriginals: `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_networks=213`,
-    fetchTopRated: `${BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=en-US`,
-    fetchHorrorMovies: `${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&with_genres=27`,
-    fetchComedyMovies: `${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&with_genres=35`,
-    fetchActionMovies: `${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&with_genres=28`,
-    fetchDocumentaries: `${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&with_genres=99`,
-};
-app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    Promise.all([
-        axios_1.default.get(requests.fetchTrending),
-        axios_1.default.get(requests.fetchNetflixOriginals),
-        axios_1.default.get(requests.fetchTopRated),
-        axios_1.default.get(requests.fetchHorrorMovies),
-        axios_1.default.get(requests.fetchComedyMovies),
-        axios_1.default.get(requests.fetchActionMovies),
-        axios_1.default.get(requests.fetchDocumentaries),
-    ])
-        .then(([response1, response2, response3, response4, response5, response6, response7]) => {
-        const data = {
-            trending: response1.data,
-            netflixOriginals: response2.data,
-            topRated: response3.data,
-            horror: response4.data,
-            comedy: response5.data,
-            action: response6.data,
-            documentaries: response7.data,
-        };
-        res.json(data);
-    })
-        .catch((error) => {
-        res.status(500).json({ message: "could not fetch data" });
-    });
-}));
 // app.use(
 //   cors({
 //     origin: "http://localhost:8000/test",
@@ -247,15 +257,16 @@ app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 //   res.send("main page")
 // })
 // just removed
-app.get("/profile", (req, res) => {
-    res.send("profile page");
-});
-app.get("/trending", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const response = yield axios_1.default.get(requests.fetchTrending);
-    res.json(response.data);
-}));
-app.get("/originals", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const response = yield axios_1.default.get(requests.fetchNetflixOriginals);
-    res.json(response.data);
-}));
+// app.get("/profile", (req: Request, res: Response) => {
+//   res.send("profile page")
+// })
+// app.get("/trending", async (req, res) => {
+//   const response = await Axios.get(requests.fetchTrending)
+//   res.json(response.data)
+// })
+// app.get("/originals", async (req, res) => {
+//   const response = await Axios.get(requests.fetchNetflixOriginals)
+//   res.json(response.data)
+// })
 // just removed
+// const jwt = require("jsonwebtoken")
