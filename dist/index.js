@@ -302,3 +302,26 @@ app.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 // const jwt = require("jsonwebtoken")
 // const jwt = require("jsonwebtoken")
 // const jwt = require("jsonwebtoken")
+// watchlater request
+app.post("/watchlater", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { media_id, user_id } = req.body;
+        const result = yield client.query("INSERT INTO watch_later(user_id, media_id) VALUES($1, $2)", [user_id, media_id]);
+        res.status(201).json({ message: "Media added to watch later list" });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Error adding media to watch later list" });
+    }
+}));
+app.post("/mylist", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { media_id, user_id } = req.body;
+        const result = yield client.query("INSERT INTO my_list(user_id, media_id) VALUES($1, $2)", [user_id, media_id]);
+        res.status(201).json({ message: "Media added to my list" });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Error adding media to my list" });
+    }
+}));
