@@ -31,12 +31,12 @@ const PORT = process.env.PORT;
 app.listen(process.env.PORT, () => {
     console.log(`Server running on port ${process.env.PORT}`);
 });
-app.listen(3000, () => {
-    console.log("listening");
-});
-app.listen(3001, () => {
-    console.log("listening to port 3001");
-});
+// app.listen(3000, () => {
+//   console.log("listening")
+// })
+// app.listen(3001, () => {
+//   console.log("listening to port 3001")
+// })
 // app.listen(5432, () => {
 //   console.log("listening")
 // })
@@ -55,7 +55,7 @@ pool.connect((err) => {
         console.log("Connected to the database");
     }
 });
-app.post("https://letterboxd-clone-backend.herokuapp.com/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { username, password } = req.body;
         const text = "INSERT INTO users (id, username, password) VALUES (DEFAULT, $1, $2) RETURNING *";

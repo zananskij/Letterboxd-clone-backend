@@ -51,7 +51,7 @@ pool.connect((err: any) => {
   }
 })
 
-app.post("letterboxd-clone-backend.herokuapp.com/register", async (req, res) => {
+app.post("/register", async (req, res) => {
   try {
     const { username, password } = req.body
     const text = "INSERT INTO users (id, username, password) VALUES (DEFAULT, $1, $2) RETURNING *"
