@@ -24,12 +24,12 @@ app.listen(process.env.PORT, () => {
   console.log(`Server running on port ${process.env.PORT}`)
 })
 
-app.listen(3000, () => {
-  console.log("listening")
-})
-app.listen(3001, () => {
-  console.log("listening to port 3001")
-})
+// app.listen(3000, () => {
+//   console.log("listening")
+// })
+// app.listen(3001, () => {
+//   console.log("listening to port 3001")
+// })
 
 // app.listen(5432, () => {
 //   console.log("listening")
@@ -51,7 +51,7 @@ pool.connect((err: any) => {
   }
 })
 
-app.post("https://letterboxd-clone-backend.herokuapp.com/register", async (req, res) => {
+app.post("letterboxd-clone-backend.herokuapp.com/register", async (req, res) => {
   try {
     const { username, password } = req.body
     const text = "INSERT INTO users (id, username, password) VALUES (DEFAULT, $1, $2) RETURNING *"
