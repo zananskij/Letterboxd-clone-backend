@@ -60,25 +60,26 @@ client.connect((err: Error) => {
 const jwt = require("jsonwebtoken")
 
 app.post("/register", async (req, res) => {
+  // verify
+  const token = req.headers.authorization
+
+  // verify
   const { username, password } = req.body
   try {
-    // Insert the user into the database
     const result = await client.query("INSERT INTO users(username,password) VALUES($1, $2) RETURNING id", [
       username,
       password,
     ])
-    // Create a new token
     const token = jwt.sign({ userId: result.rows[0].id }, process.env.SECRET_KEY, {
       expiresIn: "24h",
     })
-    // associate the token with the user in the database
-    await client.query("INSERT INTO tokens (user_id, token) VALUES ($1, $2)", [result.rows[0].id, token])
-    // Send the token back in the response
     res.status(201).json({ token })
   } catch (error) {
     console.log(error)
     res.status(500).json({ message: "Error creating user" })
   }
+  const decoded = jwt.verify(token, process.env.SECRET_KEY)
+  jwt.verify(token, process.env.SECRET_KEY)
 })
 
 app.get("/profile", (req: Request, res: Response) => {
