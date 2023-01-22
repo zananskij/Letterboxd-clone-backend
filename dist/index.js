@@ -24,6 +24,7 @@ const app = (0, express_1.default)();
 const port = 8000;
 const BASE_URL = "https://api.themoviedb.org/3";
 const API_KEY = process.env.API_KEY;
+const SECRET_KEY = process.env.SECRET_KEY;
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -231,28 +232,29 @@ app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 // after connected to db
 // after connected to db
 // login v1
-// app.post("/login", async (req, res) => {
-//   // Extract the user's information from the request body
-//   const { username, password } = req.body
-//   try {
-//     // Verify that the user's credentials are correct
-//     const result = await client.query("SELECT * FROM users WHERE username=$1 AND password=$2", [username, password])
-//     if (result.rows.length === 0) {
-//       return res.status(401).json({ message: "Invalid credentials" })
-//     }
-//     // Create a new token
-//     const token = jwt.sign({ userId: result.rows[0].id }, process.env.SECRET_KEY, {
-//       expiresIn: "24h",
-//     })
-//     // associate the token with the user in the database
-//     await client.query("INSERT INTO tokens (user_id, token) VALUES ($1, $2)", [result.rows[0].id, token])
-//     // Send the token back in the response
-//     res.status(200).json({ token })
-//   } catch (error) {
-//     console.log(error)
-//     res.status(500).json({ message: "Error logging in" })
-//   }
-// })
+app.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // Extract the user's information from the request body
+    const { username, password } = req.body;
+    try {
+        // Verify that the user's credentials are correct
+        const result = yield client.query("SELECT * FROM users WHERE username=$1 AND password=$2", [username, password]);
+        if (result.rows.length === 0) {
+            return res.status(401).json({ message: "invalid info" });
+        }
+        // Create a new token
+        const token = jwt.sign({ userId: result.rows[0].id }, process.env.SECRET_KEY, {
+            expiresIn: "24h",
+        });
+        // associate the token with the user in the database
+        yield client.query("INSERT INTO tokens (user_id, token) VALUES ($1, $2)", [result.rows[0].id, token]);
+        // Send the token back in the response
+        res.status(200).json({ token });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Error logging in" });
+    }
+}));
 // login v2
 // app.post("/login", async (req, res) => {
 //   // Extract the user's information from the request body
