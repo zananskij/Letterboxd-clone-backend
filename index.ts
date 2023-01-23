@@ -61,8 +61,7 @@ client.connect((err: Error) => {
 const jwt = require("jsonwebtoken")
 
 app.post("/register", async (req, res) => {
-  // verify
-  const token = req.headers.authorization
+  // const token = req.headers.authorization
 
   // verify
   const { username, password } = req.body
@@ -71,16 +70,16 @@ app.post("/register", async (req, res) => {
       username,
       password,
     ])
-    const token = jwt.sign({ userId: result.rows[0].id }, process.env.SECRET_KEY, {
+    const newToken = jwt.sign({ userId: result.rows[0].id }, process.env.SECRET_KEY, {
       expiresIn: "24h",
     })
-    res.status(201).json({ token })
+    await client.query("INSERT INTO tokens (user_id, token) VALUES ($1, $2)", [result.rows[0].id, newToken])
+    // Send the token back in the response
+    res.status(201).json({ newToken })
   } catch (error) {
     console.log(error)
     res.status(500).json({ message: "Error creating user" })
   }
-  const decoded = jwt.verify(token, process.env.SECRET_KEY)
-  jwt.verify(token, process.env.SECRET_KEY)
 })
 
 app.get("/profile", (req: Request, res: Response) => {
@@ -248,10 +247,13 @@ app.get("/", async (req, res) => {
 // after connected to db
 
 // login v1
+// added recent
+// const token = req.headers.authorization
+// added recent
+
 app.post("/login", async (req, res) => {
   // Extract the user's information from the request body
   const { username, password } = req.body
-
   try {
     // Verify that the user's credentials are correct
     const result = await client.query("SELECT * FROM users WHERE username=$1 AND password=$2", [username, password])
@@ -259,13 +261,13 @@ app.post("/login", async (req, res) => {
       return res.status(401).json({ message: "invalid info" })
     }
     // Create a new token
-    const token = jwt.sign({ userId: result.rows[0].id }, process.env.SECRET_KEY, {
+    const newToken = jwt.sign({ userId: result.rows[0].id }, process.env.SECRET_KEY, {
       expiresIn: "24h",
     })
     // associate the token with the user in the database
-    await client.query("INSERT INTO tokens (user_id, token) VALUES ($1, $2)", [result.rows[0].id, token])
+    await client.query("INSERT INTO tokens (user_id, token) VALUES ($1, $2)", [result.rows[0].id, newToken])
     // Send the token back in the response
-    res.status(200).json({ token })
+    res.status(200).json({ newToken, userId: result.rows[0].id })
   } catch (error) {
     console.log(error)
     res.status(500).json({ message: "Error logging in" })
@@ -333,11 +335,73 @@ app.post("/watchlater", async (req, res) => {
     const { media_id, user_id } = req.body
     const result = await client.query("INSERT INTO watch_later(user_id, media_id) VALUES($1, $2)", [user_id, media_id])
     res.status(201).json({ message: "Media added to watch later list" })
+    console.log(req.body)
   } catch (error) {
     console.log(error)
     res.status(500).json({ message: "Error adding media to watch later list" })
   }
 })
+
+// app.post("/watchlater", async (req, res) => {
+//   try {
+//     // Extract the media_id and user_id from the request body
+//     const { media_id, user_id } = req.body
+
+//     // Check if the user_id exists in the "users" table
+//     const userExists = await client.query("SELECT * FROM users WHERE id = $1", [user_id])
+
+//     // If the user_id does not exist in the "users" table, return an error
+//     if (userExists.rows.length === 0) {
+//       return res.status(401).json({ message: "Invalid userId" })
+//     }
+
+//     // Check if the media_id exists in the "media" table
+//     const mediaExists = await client.query("SELECT * FROM watch_later WHERE id = $1", [media_id])
+
+//     // If the media_id does not exist in the "media" table, return an error
+//     if (mediaExists.rows.length === 0) {
+//       return res.status(401).json({ message: "Invalid mediaId" })
+//     }
+
+//     // Insert the media_id and user_id into the watch_later table
+//     // Insert the media_id and user_id into the "watch_later" table
+//     const result = await client.query("INSERT INTO watch_later(user_id, media_id) VALUES($1, $2)", [user_id, media_id])
+//     res.status(201).json({ message: "Media added to watch later list" })
+//     console.log(result.user_id)
+//     console.log(result.media_id)
+//     // const { media_id, user_id } = req.body
+//     res.status(201).json({ message: "Media added to watch later list" })
+//     console.log(req.body)
+//   } catch (error) {
+//     console.log(error)
+//     res.status(500).json({ message: "Error adding media to watch later list" })
+//   }
+// })
+
+// app.post("/watchlater", async (req, res) => {
+//   try {
+//     // Extract the media_id and user_id from the request body
+//     const { media_id, user_id } = req.body
+
+//     // Check if the user_id exists in the database
+//     const userExists = await client.query("SELECT * FROM users WHERE id = $1", [user_id])
+
+//     // If the user_id does not exist in the database, return an error
+//     if (userExists.rows.length === 0) {
+//       return res.status(401).json({ message: "Invalid userId" })
+//     }
+
+//     // Insert the media_id and user_id into the watch_later table
+//     await client.query("INSERT INTO watch_later(user_id, media_id) VALUES($1, $2)", [user_id, media_id])
+
+//     // Send a success message in the response
+//     res.status(201).json({ message: "Media added to watch later list" })
+//   } catch (error) {
+//     console.log(error)
+//     res.status(500).json({ message: "Error adding media to watch later list" })
+//   }
+// })
+
 app.post("/mylist", async (req, res) => {
   try {
     const { media_id, user_id } = req.body
@@ -346,5 +410,36 @@ app.post("/mylist", async (req, res) => {
   } catch (error) {
     console.log(error)
     res.status(500).json({ message: "Error adding media to my list" })
+  }
+})
+
+app.post("/register", async (req, res) => {
+  const { username, password } = req.body
+  try {
+    const result = await client.query("INSERT INTO users(username,password) VALUES($1, $2) RETURNING id", [
+      username,
+      password,
+    ])
+    res.status(201).json({ message: "User created successfully" })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: "Error creating user" })
+  }
+})
+
+app.post("/login", async (req, res) => {
+  // Extract the user's information from the request body
+  const { username, password } = req.body
+  try {
+    // Verify that the user's credentials are correct
+    const result = await client.query("SELECT * FROM users WHERE username=$1 AND password=$2", [username, password])
+    if (result.rows.length === 0) {
+      return res.status(401).json({ message: "invalid info" })
+    }
+    // Send the userId in the response
+    res.status(200).json({ userId: result.rows[0].id })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: "Error logging in" })
   }
 })
