@@ -152,15 +152,19 @@ app.post("/users/:username/watchlater", (req, res) => __awaiter(void 0, void 0, 
     const { username } = req.params;
     const { media_id } = req.body;
     try {
+        console.log(`Username: ${username}, Media ID: ${media_id}`);
         const user = yield (0, users_1.getUserByUsername)(username);
         if (!user) {
             return res.status(404).send({ message: "User not found" });
         }
+        console.log(`User: ${JSON.stringify(user)}`);
         // Add media to the user's watchlater list
         yield (0, users_1.addMediaToWatchLater)(user.id, media_id);
+        console.log(`Media added to watchlater list for user ${username}`);
         res.status(200).send({ message: "Media added to watchlater list successfully" });
     }
     catch (err) {
+        console.log(`Error in /users/:username/watchlater: ${err}`);
         res.status(500).send({ message: "An error occurred", error: err });
     }
 }));
@@ -196,59 +200,6 @@ app.get("/users/:username/watchlater", (req, res) => __awaiter(void 0, void 0, v
         res.status(500).send({ message: "An error occurred", error: err });
     }
 }));
-// const { Client } = require("pg")
-// const client = new Client({
-//   host: process.env.PG_HOST,
-//   port: process.env.PORT,
-//   user: process.env.PG_USER,
-//   password: process.env.PG_PASSWORD,
-//   database: process.env.PG_DATABASE,
-//   ssl: {
-//     rejectUnauthorized: false,
-//   },
-// })
-// client.connect((err: Error) => {
-//   if (err) {
-//     console.error("connection error", err.stack)
-//   } else {
-//     console.log("connected")
-//   }
-// })
-// v222
-// const { Client } = require("pg")
-// const client = new Client({
-//   connectionString: process.env.DATABASE_URL,
-//   ssl: {
-//     rejectUnauthorized: false,
-//   },
-// })
-// client.connect((err: Error) => {
-//   if (err) {
-//     console.error("connection error", err.stack)
-//   } else {
-//     console.log("connected")
-//   }
-// })
-const jwt = require("jsonwebtoken");
-// register request
-// v222
-// app.post("/register", async (req, res) => {
-//   const { username, password } = req.body
-//   try {
-//     const result = await client.query("INSERT INTO users(username,password) VALUES($1, $2) RETURNING id", [
-//       username,
-//       password,
-//     ])
-//     const newToken = jwt.sign({ userId: result.rows[0].id }, process.env.SECRET_KEY, {
-//       expiresIn: "24h",
-//     })
-//     await client.query("INSERT INTO tokens (user_id, token) VALUES ($1, $2)", [result.rows[0].id, newToken])
-//     res.status(201).json({ newToken })
-//   } catch (error) {
-//     console.log(error)
-//     res.status(500).json({ message: "Error creating user" })
-//   }
-// })
 app.get("/profile", (req, res) => {
     res.send("profile page");
 });
@@ -382,5 +333,58 @@ app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 //   } catch (error) {
 //     console.log(error)
 //     res.status(500).json({ message: "Error logging in" })
+//   }
+// })
+// const { Client } = require("pg")
+// const client = new Client({
+//   host: process.env.PG_HOST,
+//   port: process.env.PORT,
+//   user: process.env.PG_USER,
+//   password: process.env.PG_PASSWORD,
+//   database: process.env.PG_DATABASE,
+//   ssl: {
+//     rejectUnauthorized: false,
+//   },
+// })
+// client.connect((err: Error) => {
+//   if (err) {
+//     console.error("connection error", err.stack)
+//   } else {
+//     console.log("connected")
+//   }
+// })
+// v222
+// const { Client } = require("pg")
+// const client = new Client({
+//   connectionString: process.env.DATABASE_URL,
+//   ssl: {
+//     rejectUnauthorized: false,
+//   },
+// })
+// client.connect((err: Error) => {
+//   if (err) {
+//     console.error("connection error", err.stack)
+//   } else {
+//     console.log("connected")
+//   }
+// })
+const jwt = require("jsonwebtoken");
+// register request
+// v222
+// app.post("/register", async (req, res) => {
+//   const { username, password } = req.body
+//   try {
+//     const result = await client.query("INSERT INTO users(username,password) VALUES($1, $2) RETURNING id", [
+//       username,
+//       password,
+//     ])
+//     const newToken = jwt.sign({ userId: result.rows[0].id }, process.env.SECRET_KEY, {
+//       expiresIn: "24h",
+//     })
+//     await client.query("INSERT INTO tokens (user_id, token) VALUES ($1, $2)", [result.rows[0].id, newToken])
+//     res.status(201).json({ newToken })
+//   } catch (error) {
+//     console.log(error)
+//     res.status(500).json({ message: "Error creating user" })
 //   }
 // })
