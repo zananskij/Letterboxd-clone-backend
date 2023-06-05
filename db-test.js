@@ -1,4 +1,3 @@
-// db-test.js
 require("dotenv").config()
 const { Pool } = require("pg")
 

@@ -1,4 +1,3 @@
-// db.ts
 const { Pool } = require("pg")
 import dotenv from "dotenv"
 
