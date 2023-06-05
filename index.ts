@@ -290,6 +290,56 @@ app.get("/", async (req, res) => {
       res.status(500).json({ message: "could not fetch data" })
     })
 })
+
+const SEARCH_BASE_URL = "https://api.themoviedb.org/3/search/movie"
+
+// working search 1st attempt
+// app.get("/search/:term", async (req, res) => {
+//   const searchTerm = req.params.term
+
+//   if (typeof searchTerm !== "string") {
+//     res.status(400).json({ message: "Bad request" })
+//     return
+//   }
+
+//   try {
+//     const response = await Axios.get(`${SEARCH_BASE_URL}?api_key=${API_KEY}&query=${encodeURIComponent(searchTerm)}`)
+//     res.json(response.data)
+//   } catch (error) {
+//     res.status(500).json({ message: "Could not fetch data" })
+//   }
+// })
+// working search 1st attempt
+
+interface Media {
+  title: string
+  original_title: string
+  [propName: string]: any // This line means that a Media can have any other properties in addition to title and original_title
+}
+
+app.get("/search/:term", async (req, res) => {
+  const searchTerm = req.params.term
+
+  if (typeof searchTerm !== "string") {
+    res.status(400).json({ message: "Bad request" })
+    return
+  }
+
+  try {
+    const response = await Axios.get(`${SEARCH_BASE_URL}?api_key=${API_KEY}&query=${encodeURIComponent(searchTerm)}`)
+
+    const filteredData = response.data.results.filter(
+      (media: Media) =>
+        media.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        media.original_title.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+
+    res.json({ ...response.data, results: filteredData })
+  } catch (error) {
+    res.status(500).json({ message: "Could not fetch data" })
+  }
+})
+
 // v2222
 // app.post("/login", async (req, res) => {
 //   // get the user's information from the request body

@@ -249,6 +249,23 @@ app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(500).json({ message: "could not fetch data" });
     });
 }));
+const SEARCH_BASE_URL = "https://api.themoviedb.org/3/search/movie";
+app.get("/search/:term", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const searchTerm = req.params.term;
+    if (typeof searchTerm !== "string") {
+        res.status(400).json({ message: "Bad request" });
+        return;
+    }
+    try {
+        const response = yield axios_1.default.get(`${SEARCH_BASE_URL}?api_key=${API_KEY}&query=${encodeURIComponent(searchTerm)}`);
+        const filteredData = response.data.results.filter((media) => media.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            media.original_title.toLowerCase().includes(searchTerm.toLowerCase()));
+        res.json(Object.assign(Object.assign({}, response.data), { results: filteredData }));
+    }
+    catch (error) {
+        res.status(500).json({ message: "Could not fetch data" });
+    }
+}));
 // v2222
 // app.post("/login", async (req, res) => {
 //   // get the user's information from the request body
