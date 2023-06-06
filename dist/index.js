@@ -266,6 +266,38 @@ app.get("/search/:term", (req, res) => __awaiter(void 0, void 0, void 0, functio
         res.status(500).json({ message: "Could not fetch data" });
     }
 }));
+// fetching trailer attempt
+// app.get("/movie/:id", async (req, res) => {
+//   try {
+//     // Fetch movie data...
+//     const movieResponse = await Axios.get(`https://api.themoviedb.org/3/movie/${req.params.id}?api_key=${API_KEY}`)
+//     const movieData = movieResponse.data
+//     interface VideoData {
+//       id: string
+//       iso_639_1: string
+//       iso_3166_1: string
+//       key: string
+//       name: string
+//       site: string
+//       size: number
+//       type: string
+//     }
+// Fetch movie trailer...
+//     const trailerResponse = await Axios.get(
+//       `https://api.themoviedb.org/3/movie/${req.params.id}/videos?api_key=${API_KEY}`
+//     )
+//     const trailerVideos = trailerResponse.data.results
+//     const trailer = trailerVideos.find((video: VideoData) => video.type === "Trailer")
+//     const trailerUrl = trailer ? `https://www.youtube.com/watch?v=${trailer.key}` : null
+//     // Add trailer URL to movie data and send response
+//     movieData.trailerUrl = trailerUrl
+//     res.json(movieData)
+//   } catch (error) {
+//     console.error(error)
+//     res.status(500).send("Server error")
+//   }
+// })
+// Fetch movie trailer...
 // v2222
 // app.post("/login", async (req, res) => {
 //   // get the user's information from the request body
