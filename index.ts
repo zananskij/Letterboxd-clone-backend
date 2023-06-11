@@ -1,61 +1,4 @@
 // imports + setup
-// import express, { Express, Request, Response } from "express"
-// import Axios from "axios"
-// import fetch from "node-fetch"
-// import cors from "cors"
-// import pgPromise from "pg-promise"
-// import dotenv from "dotenv"
-// dotenv.config()
-// const app: Express = express()
-
-// const BASE_URL = "https://api.themoviedb.org/3"
-// const API_KEY = process.env.API_KEY
-// const SECRET_KEY = process.env.SECRET_KEY
-
-// const bodyParser = require("body-parser")
-// app.use(bodyParser.json())
-// app.use(bodyParser.urlencoded({ extended: true }))
-
-// app.use(cors())
-// app.use(express.json()) // to parse JSON request bodies
-
-// const port = 8000
-
-// const PORT = process.env.PORT
-// app.listen(process.env.PORT, () => {
-//   console.log(`Server running on port ${process.env.PORT}`)
-// })
-
-// app.listen(port, () => {
-//   console.log(`listening on port ${port} `)
-// })
-
-// const pgp = pgPromise()
-
-// const db = pgp({
-//   host: process.env.PG_HOST,
-//   port: Number(process.env.PG_PORT),
-//   database: process.env.PG_DATABASE,
-//   user: process.env.PG_USER,
-//   password: process.env.PG_PASSWORD,
-// })
-
-// // import { Pool } from "pg"
-// const { Pool } = require("pg")
-
-// const pool = new Pool({
-//   host: process.env.PG_HOST,
-//   port: process.env.PG_PORT,
-//   user: process.env.PG_USER,
-//   password: process.env.PG_PASSWORD,
-//   database: process.env.PG_DATABASE,
-// })
-
-// pool.query("SELECT NOW()", (err: Error, res: Response) => {
-//   console.log(err, res)
-//   pool.end()
-// })
-// imports + setup
 import express, { Express, Request, Response } from "express"
 import Axios from "axios"
 import fetch from "node-fetch"
@@ -93,19 +36,6 @@ const db = pgp({
   connectionString: connectionString,
   ssl: isProduction ? { rejectUnauthorized: false } : false,
 })
-
-// import { Pool } from "pg"
-// const { Pool } = require("pg")
-
-// const pool = new Pool({
-//   connectionString: connectionString,
-//   ssl: isProduction ? { rejectUnauthorized: false } : false,
-// })
-
-// pool.query("SELECT NOW()", (err: Error, res: Response) => {
-//   console.log(err, res)
-//   pool.end()
-// })
 
 import {
   createUser,
@@ -417,7 +347,7 @@ app.get("/search/:term", async (req, res) => {
 // })
 // Fetch movie trailer...
 
-// v2222
+// v2
 // app.post("/login", async (req, res) => {
 //   // get the user's information from the request body
 //   const { username, password } = req.body
@@ -441,7 +371,7 @@ app.get("/search/:term", async (req, res) => {
 //   }
 // })
 
-// v222222
+// v2
 // app.post("/watchlater", async (req, res) => {
 //   try {
 //     const { media_id, user_id } = req.body
@@ -465,7 +395,7 @@ app.get("/search/:term", async (req, res) => {
 //   }
 // })
 
-// v222
+// v2
 // app.post("/mylist", async (req, res) => {
 //   try {
 //     const { media_id, user_id } = req.body
@@ -528,7 +458,7 @@ app.get("/search/:term", async (req, res) => {
 //   }
 // })
 
-// v222
+// v2
 // const { Client } = require("pg")
 // const client = new Client({
 //   connectionString: process.env.DATABASE_URL,
@@ -547,7 +477,7 @@ app.get("/search/:term", async (req, res) => {
 const jwt = require("jsonwebtoken")
 
 // register request
-// v222
+// v2
 // app.post("/register", async (req, res) => {
 //   const { username, password } = req.body
 //   try {
