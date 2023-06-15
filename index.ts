@@ -1,4 +1,6 @@
-// imports + setup
+// import + setup
+const v8 = require("v8")
+
 import express, { Express, Request, Response } from "express"
 import Axios from "axios"
 import fetch from "node-fetch"
@@ -21,8 +23,16 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors())
 app.use(express.json()) // to parse JSON request bodies
 
+// app.listen(process.env.PORT, () => {
+//   console.log(`Server running on port ${process.env.PORT}`)
+// })
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port ${process.env.PORT}`)
+
+  // Logs memory stats every 10 minutes
+  setInterval(() => {
+    console.log("Current memory usage:", v8.getHeapStatistics())
+  }, 600000)
 })
 
 const pgp = pgPromise()
@@ -244,6 +254,7 @@ const requests = {
 
 // fetches data for the homepage
 app.get("/", async (req, res) => {
+  console.log("Memory stats before operation:", v8.getHeapStatistics())
   Promise.all([
     Axios.get(requests.fetchTrending),
     Axios.get(requests.fetchNetflixOriginals),
@@ -269,6 +280,7 @@ app.get("/", async (req, res) => {
     })
     .catch((error) => {
       res.status(500).json({ message: "could not fetch data" })
+      console.log("Memory stats after operation:", v8.getHeapStatistics())
     })
 })
 

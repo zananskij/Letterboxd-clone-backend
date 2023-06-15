@@ -1,14 +1,14 @@
-# Streaming Blacklist - Backend
+# Streaming Backlist - Backend
 
 ## Overview
 
-This repository contains the backend code for my Streaming Blacklist project. The backend is built using Express, a fast and minimalist web framework for Node.js. It leverages the power of Express to handle routing, middleware, and API endpoints effectively. The backend communicates with a PostgreSQL database to store and retrieve user and media information. JSON Web Tokens (JWT) are used for user authentication and authorization.
+This repository contains the backend code for my Streaming Backlist project. The backend is built using Express, a fast and minimalist web framework for Node.js. It leverages the power of Express to handle routing, middleware, and API endpoints effectively. The backend communicates with a PostgreSQL database to store and retrieve user and media information. JSON Web Tokens (JWT) are used for user authentication and authorization.
 
-## Deployed Link (Backend API)
+## Deployed Link
 
-https://letterboxd-clone-backend.herokuapp.com/
+https://letterboxd-clone-frontend.herokuapp.com/
 
-## Skills Utilized
+## Skills Utilized (Backend)
 
 - TypeScript
 - PostgreSQL
