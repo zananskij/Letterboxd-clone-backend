@@ -1,5 +1,5 @@
 // import + setup
-const v8 = require("v8")
+// const v8 = require("v8")
 
 import express, { Express, Request, Response } from "express"
 import Axios from "axios"
@@ -31,7 +31,7 @@ app.listen(process.env.PORT, () => {
 
   // Logs memory stats every 10 minutes
   setInterval(() => {
-    console.log("Current memory usage:", v8.getHeapStatistics())
+    // console.log("Current memory usage:", v8.getHeapStatistics())
   }, 600000)
 })
 
@@ -254,7 +254,7 @@ const requests = {
 
 // fetches data for the homepage
 app.get("/", async (req, res) => {
-  console.log("Memory stats before operation:", v8.getHeapStatistics())
+  // console.log("Memory stats before operation:", v8.getHeapStatistics())
   Promise.all([
     Axios.get(requests.fetchTrending),
     Axios.get(requests.fetchNetflixOriginals),
@@ -280,7 +280,7 @@ app.get("/", async (req, res) => {
     })
     .catch((error) => {
       res.status(500).json({ message: "could not fetch data" })
-      console.log("Memory stats after operation:", v8.getHeapStatistics())
+      // console.log("Memory stats after operation:", v8.getHeapStatistics())
     })
 })
 
