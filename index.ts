@@ -1,13 +1,10 @@
-// import + setup
-// const v8 = require("v8")
-
 import express, { Express, Request, Response } from "express"
 import Axios from "axios"
-import fetch from "node-fetch"
+// import fetch from "node-fetch"
 import cors from "cors"
 import pgPromise from "pg-promise"
 import dotenv from "dotenv"
-import pool from "./db"
+// import pool from "./db"
 
 dotenv.config()
 const app: Express = express()
@@ -23,17 +20,17 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors())
 app.use(express.json()) // to parse JSON request bodies
 
-// app.listen(process.env.PORT, () => {
-//   console.log(`Server running on port ${process.env.PORT}`)
-// })
 app.listen(process.env.PORT, () => {
   console.log(`Server running on port ${process.env.PORT}`)
-
-  // Logs memory stats every 10 minutes
-  setInterval(() => {
-    // console.log("Current memory usage:", v8.getHeapStatistics())
-  }, 600000)
 })
+// app.listen(process.env.PORT, () => {
+//   console.log(`Server running on port ${process.env.PORT}`)
+
+//   // Logs memory stats every 10 minutes
+//   setInterval(() => {
+//     // console.log("Current memory usage:", v8.getHeapStatistics())
+//   }, 600000)
+// })
 
 const pgp = pgPromise()
 
@@ -168,19 +165,19 @@ app.post("/users/:username/watchlater", async (req, res) => {
   const { media_id } = req.body
 
   try {
-    console.log(`Username: ${username}, Media ID: ${media_id}`)
+    // console.log(`Username: ${username}, Media ID: ${media_id}`)
 
     const user = await getUserByUsername(username)
 
     if (!user) {
       return res.status(404).send({ message: "User not found" })
     }
-    console.log(`User: ${JSON.stringify(user)}`)
+    // console.log(`User: ${JSON.stringify(user)}`)
 
     // Add media to the user's watchlater list
     await addMediaToWatchLater(user.id, media_id)
 
-    console.log(`Media added to watchlater list for user ${username}`)
+    // console.log(`Media added to watchlater list for user ${username}`)
 
     res.status(200).send({ message: "Media added to watchlater list successfully" })
   } catch (err) {
@@ -486,7 +483,7 @@ app.get("/search/:term", async (req, res) => {
 //   }
 // })
 
-const jwt = require("jsonwebtoken")
+// const jwt = require("jsonwebtoken")
 
 // register request
 // v2
