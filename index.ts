@@ -251,6 +251,7 @@ const requests = {
 
 // fetches data for the homepage
 app.get("/", async (req, res) => {
+  // console.log("Memory stats before operation:", v8.getHeapStatistics())
   Promise.all([
     Axios.get(requests.fetchTrending),
     Axios.get(requests.fetchNetflixOriginals),
