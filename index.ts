@@ -249,7 +249,7 @@ const requests = {
   fetchDocumentaries: `${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&with_genres=99`,
 }
 
-// fetches data for the homepage
+// fetches data for the homepagee
 app.get("/", async (req, res) => {
   // console.log("Memory stats before operation:", v8.getHeapStatistics())
   Promise.all([
